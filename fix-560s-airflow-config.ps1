@@ -31,7 +31,7 @@ if ($WhatIf) {
     exit 0
 }
 
-$backupPath = "$ConfigPath.bak"
+$backupPath = "$ConfigPath.bak.$(Get-Date -Format 'yyyyMMddHHmmss')"
 Copy-Item -LiteralPath $ConfigPath -Destination $backupPath -Force
 
 Set-Content -LiteralPath $ConfigPath -Value $updatedContent -NoNewline
