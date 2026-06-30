@@ -24,16 +24,16 @@ if ($matches -eq 0) {
     exit 0
 }
 
-$updatedContent = $content.Replace($OldValue, $NewValue)
-
 if ($WhatIf) {
     Write-Host "[WhatIf] Would replace $matches occurrence(s) of '$OldValue' with '$NewValue' in $ConfigPath."
     exit 0
 }
 
+$updatedContent = $content.Replace($OldValue, $NewValue)
+
 $backupPath = "$ConfigPath.bak.$(Get-Date -Format 'yyyyMMddHHmmss')"
 Copy-Item -LiteralPath $ConfigPath -Destination $backupPath -Force
 
-Set-Content -LiteralPath $ConfigPath -Value $updatedContent -NoNewline
+Set-Content -LiteralPath $ConfigPath -Value $updatedContent
 Write-Host "Updated $ConfigPath and created backup at $backupPath."
 Write-Host "Replaced $matches occurrence(s) of '$OldValue' with '$NewValue'."
