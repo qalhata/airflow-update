@@ -43,9 +43,9 @@ if ($CaseInsensitive) {
     $updatedContent = $content.Replace($OldValue, $NewValue)
 }
 
-$backupPath = "$ConfigPath.bak.$(Get-Date -Format 'yyyyMMddHHmmss')"
+$backupPath = "$ConfigPath.bak.$(Get-Date -Format 'yyyyMMddHHmmssffff')"
 Copy-Item -LiteralPath $ConfigPath -Destination $backupPath -Force
 
-[System.IO.File]::WriteAllText($ConfigPath, $updatedContent)
+Set-Content -LiteralPath $ConfigPath -Value $updatedContent -NoNewline
 Write-Host "Updated $ConfigPath and created backup at $backupPath."
 Write-Host "Replaced $matches occurrence(s) of '$OldValue' with '$NewValue'."
