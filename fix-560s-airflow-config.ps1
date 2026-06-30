@@ -43,7 +43,7 @@ if ($CaseInsensitive) {
     $updatedContent = $content.Replace($OldValue, $NewValue)
 }
 
-$backupPath = "$ConfigPath.bak.$(Get-Date -Format 'yyyyMMddHHmmssfff')"
+$backupPath = "$ConfigPath.bak.$(Get-Date -Format 'yyyyMMddHHmmssfff').$([guid]::NewGuid().ToString('N'))"
 Copy-Item -LiteralPath $ConfigPath -Destination $backupPath -Force
 
 Set-Content -LiteralPath $ConfigPath -Value $updatedContent -NoNewline
