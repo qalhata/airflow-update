@@ -10,6 +10,9 @@ Run the PowerShell script below to replace `560S` with `560s` in your local `air
 pwsh -NoProfile -File ./fix-560s-airflow-config.ps1 -ConfigPath ./airflow.cfg
 ```
 
+
+If your config may contain mixed-case variants, add `-CaseInsensitive`.
+
 Optional dry run:
 
 ```powershell

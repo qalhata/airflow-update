@@ -9,6 +9,8 @@ param(
     [Parameter(Mandatory = $false)]
     [string]$NewValue = "560s",
 
+    [switch]$CaseInsensitive,
+
     [switch]$WhatIf
 )
 
@@ -17,7 +19,13 @@ if (-not (Test-Path -LiteralPath $ConfigPath -PathType Leaf)) {
 }
 
 $content = Get-Content -LiteralPath $ConfigPath -Raw
-$matches = [regex]::Matches($content, [regex]::Escape($OldValue)).Count
+
+if ($CaseInsensitive) {
+    $pattern = [regex]::Escape($OldValue)
+    $matches = [regex]::Matches($content, $pattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase).Count
+} else {
+    $matches = [regex]::Matches($content, [regex]::Escape($OldValue)).Count
+}
 
 if ($matches -eq 0) {
     Write-Host "No '$OldValue' values found in $ConfigPath. No changes made."
@@ -29,11 +37,15 @@ if ($WhatIf) {
     exit 0
 }
 
-$updatedContent = $content.Replace($OldValue, $NewValue)
+if ($CaseInsensitive) {
+    $updatedContent = [regex]::Replace($content, $pattern, $NewValue, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+} else {
+    $updatedContent = $content.Replace($OldValue, $NewValue)
+}
 
 $backupPath = "$ConfigPath.bak.$(Get-Date -Format 'yyyyMMddHHmmss')"
 Copy-Item -LiteralPath $ConfigPath -Destination $backupPath -Force
 
-Set-Content -LiteralPath $ConfigPath -Value $updatedContent
+[System.IO.File]::WriteAllText($ConfigPath, $updatedContent)
 Write-Host "Updated $ConfigPath and created backup at $backupPath."
 Write-Host "Replaced $matches occurrence(s) of '$OldValue' with '$NewValue'."
